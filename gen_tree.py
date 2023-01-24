@@ -18,8 +18,19 @@ Arbres généraux :
 # Partie 1 : Mesures
 
 # Ex 1.1 : La taille
-def size(A):
+def size(T):    # classe Tree
     n = 1
     #pour chaque sous-arbre de Ai (sera le cas d'arrêt si le noeud est une feuille)
     #   n+=size(Ai)
+    for c in T.children:
+        n+=size(c)
+    return n
+
+def sizebin(B):    # classe TreeAsBin
+    n = 1
+    # instructions
+    C = B.child
+    while(C!=None):
+        n+=sizebin(C)
+        C = C.sibling
     return n
