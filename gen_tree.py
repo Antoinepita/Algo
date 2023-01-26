@@ -15,6 +15,10 @@ Arbres généraux :
     - B.sibling : lien vers le premier frère droit
     - noeud est une feuille quand B.child == None
 """
+
+from algopy import tree
+from algopy import treeasbin
+
 # Partie 1 : Mesures
 
 # Ex 1.1 : La taille

@@ -4,7 +4,7 @@ Examples of trees in both implementations
 to tests yours functions
 """
 
-from algo_py.tree import Tree
+from algopy import Tree
 
 # the first example in tutorial
 T1 = Tree(15,
