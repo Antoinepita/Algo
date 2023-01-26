@@ -58,9 +58,37 @@ def height(T,n=0):  # arbre général
         n = getMax(L)   # on ne garde que la valeur maximale de la liste
     return n # on retourne la hauteur du noeud
 
-def height(B,n=0):
+def heightbin(B,n=0):
     C = B.child # on prend son premiers fils
     L = [n] # on crée une liste avec la valeur de la hauteur actuelle
     while(C.sibling!=None): # pour tous les frères du premier fils du noeud initial
-        L.append(height(C.child,n+1))   # on ajoute à la liste leur hauteur
+        L.append(heightbin(C.child,n+1))   # on ajoute à la liste leur hauteur
     return getMax(L)    # on retourne la valeur maximale
+
+def heightbin2(B):
+    if B==None:
+        return -1
+    else:
+        return max(1 + heightbin2(B.child),heightbin2(B.sibling))
+    
+def DFStree(T):
+    s = '<' + str(T.key)
+    if T.nbchildren!=0:
+        for i in range(T.nbchildren-1):
+            DFStree(T.children[i])
+            s+=','
+        DFStree(T.children[-1])
+    s+='>'
+    print(s)
+
+def DFSbin(B):
+    s='<'+str(B.key)
+    if B.child!=None:
+        C = B.child
+        while C.sibling!=None:
+            DFSbin(C)
+            s+=','
+            C = C.sibling
+        DFSbin(C)
+    s+='>'
+    print(s,end='')
