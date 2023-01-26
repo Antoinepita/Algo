@@ -71,7 +71,10 @@ def heightbin2(B):
     else:
         return max(1 + heightbin2(B.child),heightbin2(B.sibling))
     
-def DFStree(T):
+# Partie 2 : Parcours
+
+# Ex 2.1 : Parcours profondeur   
+def DFStree(T): # arbre général
     s = '<' + str(T.key)
     if T.nbchildren!=0:
         for i in range(T.nbchildren-1):
@@ -81,7 +84,7 @@ def DFStree(T):
     s+='>'
     print(s)
 
-def DFSbin(B):
+def DFSbin(B):  # arbre bijection premier fils-frère droit
     s='<'+str(B.key)
     if B.child!=None:
         C = B.child
@@ -92,3 +95,27 @@ def DFSbin(B):
         DFSbin(C)
     s+='>'
     print(s,end='')
+
+# Partie 3 : Applications
+
+# Ex 3.1 : Représentation linéaire
+def to_linear_tree(T):
+    s = "("+T.key
+    for c in T.children:
+        s+=to_linear_tree(c)
+    s+=")"
+    return s
+
+def to_linear_bin(B):
+    s = "(" + B.key
+    if B.child!=None:
+        C = B.child
+        s+=to_linear_bin(C)
+    s+=")"
+    if B.sibling!=None:
+        C = B.sibling
+        s+=to_linear_bin(C)
+    s+=")"
+    return s
+
+# problème de to_linear_bin : fais des parenthèses fermées en trop
