@@ -96,6 +96,9 @@ def DFSbin(B):  # arbre bijection premier fils-frère droit
     s+='>'
     print(s,end='')
 
+# Ex 2.2 : Parcours largeur
+
+
 # Partie 3 : Applications
 
 # Ex 3.1 : Représentation linéaire
@@ -108,14 +111,10 @@ def to_linear_tree(T):
 
 def to_linear_bin(B):
     s = "(" + B.key
-    if B.child!=None:
-        C = B.child
-        s+=to_linear_bin(C)
-    s+=")"
-    if B.sibling!=None:
-        C = B.sibling
-        s+=to_linear_bin(C)
+    C = B.child
+    if C.child!=None:
+        s+=to_linear_bin(C) + ")"
+    if C.sibling!=None:
+        s+=to_linear_bin(C.sibling)
     s+=")"
     return s
-
-# problème de to_linear_bin : fais des parenthèses fermées en trop
