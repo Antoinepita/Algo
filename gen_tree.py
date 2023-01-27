@@ -113,7 +113,7 @@ def to_linear_bin(B):
     s = "(" + B.key
     C = B.child
     if C.child!=None:
-        s+=to_linear_bin(C) + ")"
+        s+=to_linear_bin(C)
     if C.sibling!=None:
         s+=to_linear_bin(C.sibling)
     s+=")"
