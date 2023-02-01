@@ -18,6 +18,7 @@ Arbres généraux :
 
 from algopy import tree
 from algopy import treeasbin
+from algopy import queue
 
 # Partie 1 : Mesures
 
@@ -97,24 +98,79 @@ def DFSbin(B):  # arbre bijection premier fils-frère droit
     print(s,end='')
 
 # Ex 2.2 : Parcours largeur
+"""
+Pseudo algo : méthode avec une pile et marqueur de changement de niveau
+    f = file.vide()
+    enfiler(f,racine)
+    enfiler(f,/)
+    tant que f != vide
+        N = defiler(f)
+        si N = / :
+            si f != vide :
+                enfiler(f,/)
+            fin si
+        sinon
+            pour chaque fils Fi de N
+                enfiler(f,Fi)
+            fin pour
+            # enfiler(f,/) # si on met cette instruction là, ça va poser pb à partir du 2eme niveau
+        fin si
+    fin tant que
+
+    
+Pseudo algo : méthode avec deux files
+
+"""
+def BFS(T):     # arbre général avec méthode une pile + marqueur de niveau
+    q = queue.Queue()
+    q.enqueue(T)
+    q.enqueue(None)
+    while not q.isempty():
+        N = q.dequeue()
+        if N==None:
+            print()
+            if not q.isempty():
+                q.enqueue(None)
+        else:
+            print(T.key, end=' ')
+            for children in T.children:
+                q.enqueue(children)
+
+
+def BFS2(T):    # arbre général avec méthode deux piles
+    q1 = queue.Queue()
+    q2 = queue.Queue()
+    q1.enqueue(T)
+    return 2
 
 
 # Partie 3 : Applications
 
 # Ex 3.1 : Représentation linéaire
 def to_linear_tree(T):
-    s = "("+T.key
+    s = "("+ str(T.key)
     for c in T.children:
         s+=to_linear_tree(c)
     s+=")"
     return s
 
 def to_linear_bin(B):
-    s = "(" + B.key
+    s = "(" + str(B.key)
     C = B.child
     if C.child!=None:
         s+=to_linear_bin(C)
+    s += ")"
     if C.sibling!=None:
-        s+=to_linear_bin(C.sibling)
+        s+=to_linear_bin(C.sibling)  
+    # s += ")"      # exemple du noeud racine : n'a pas de frère
+    return s
+
+def to_linear_TAB(B):   # correction prof
+    s = "(" + str(B.key)
+    C = B.child
+    while C != None:
+        s+=to_linear_TAB(C)
+        C = C.sibling
     s+=")"
     return s
+
