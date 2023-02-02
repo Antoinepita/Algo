@@ -174,3 +174,4 @@ def to_linear_TAB(B):   # correction prof
     s+=")"
     return s
 
+# Ex 3.2 : format dot
