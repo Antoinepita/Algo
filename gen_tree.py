@@ -137,11 +137,21 @@ def BFS(T):     # arbre général avec méthode une pile + marqueur de niveau
                 q.enqueue(children)
 
 
-def BFS2(T):    # arbre général avec méthode deux piles
-    q1 = queue.Queue()
-    q2 = queue.Queue()
-    q1.enqueue(T)
-    return 2
+def BFS_TAB_2(B):     # arbre bijection premier fils-frère droit avec méthode double pile
+    q_out = queue.Queue()
+    q_in = queue.Queue()
+    q_out.enqueue(B)
+    while not q_out.isempty():
+        B = q_out.dequeue()
+        print(B.key, end=' ')
+        C = C.child
+        while C != None:
+            q_in.enqueue(C)
+            C = C.sibling
+        if q_out.isempty():
+            print()
+            q_out = q_in
+            q_in = queue.Queue()
 
 
 # Partie 3 : Applications
@@ -175,3 +185,84 @@ def to_linear_TAB(B):   # correction prof
     return s
 
 # Ex 3.2 : format dot
+def toDot(T):       # arbre général
+    s = "graph {\n"
+    q = queue.Queue()
+    q.enqueue(T)
+    while not q.isempty():
+        T = q.dequeue()
+        for child in T.children:
+            s += str(T.key) + " -- " + str(child.key) + "\n"
+    s+="}"
+    return s
+
+def toDot_TAB(B):   # arbre binaire
+    s = "graph {\n"
+    q = queue.Queue()
+    q.enqueue(T)
+    while not q.isempty():
+        T = q.dequeue()
+        for child in T.children:    # il faut modifier cette ligne là
+            s += str(T.key) + " -- " + str(child.key) + "\n"
+    s+="}"
+    return s
+
+def morechildren(T,n=0):
+    if T.children==0:
+        return True
+    if T.nbchildren<=n:
+        return False
+    else:
+        for child in T.children:
+            if not morechildren(child,T.nbchildren):
+                return False
+        return True
+    
+def morechildren_TAB(B, n = 0):    # arbre bijection premier fils-frère droit
+    if B.child==None:
+        return True
+    C = B.child
+    nbchildren = 1
+    while C.sibling:
+        nbchildren+=1
+        C = C.sibling
+    if nbchildren<=n:
+        return False
+    else:
+        while C and morechildren(C, nbchildren):
+            C = C.sibling
+        return C==None
+    
+# Ex 3.4 : PME
+
+def nb_height(T,nb,height):
+    if T.nbchildren==0:
+        return (nb+1,height)
+    else:
+        (number,hauteur)=(0,0)
+        for child in T.children:
+            couple = nb_height(child,nb,height+1)
+            number += couple[0]
+            hauteur += couple[1]
+        return (number,hauteur)
+
+def pme(T):
+    couple = nb_height(T,0,0)
+    return couple[1]/couple[0]
+
+def nb_height_TAB(B,nb,height):
+    if B.child==None:
+        return (nb+1,height)
+    else:
+        C = B.child
+        (number,hauteur)=(0,0)
+        while C:
+            couple = nb_height_TAB(C,nb,height+1)
+            number += couple[0]
+            hauteur += couple[1]
+            C = C.sibling
+        return(number,hauteur)
+
+def pme(B):
+    couple = nb_height_TAB(B,0,0)
+    return couple[1]/couple[0]
