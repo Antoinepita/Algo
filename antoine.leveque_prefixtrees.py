@@ -80,9 +80,9 @@ def word_list(T):
     """ generate the word list of the prefix tree T (ptree.Tree)
     return type: str list
     """
-    
     #FIXME
     pass
+        
 
 def contains(L,x):
     """
@@ -97,7 +97,7 @@ def contains(L,x):
     while i<len(L) and state==False:
         state = (L[i]).key[0]==x
         i+=1
-    return (i-1!=len(L),i-1)
+    return (i!=len(L),i)
 
 def search_word(T, w): # fonctionne
     """ search for the word w (str) not empty in the prefix tree T (ptree.Tree)
@@ -121,10 +121,20 @@ def completion(T, prefix):
     """ generate the list of words in the prefix tree T (ptree.Tree) with a common prefix 
     return type: str list    
     """
-    
-    #FIXME
-    pass
-
+    s = ""
+    i = 0
+    C = T
+    state = True
+    while s!=prefix and state: # recherche de l'arbre contenant tous les mots avec comme préfixe prefix
+        temp = contains(C.children,prefix[i])
+        if temp==(False,C.nbchildren):
+            state = False
+        else:
+            s+=prefix[i]
+            i+=1
+            index = temp[1]
+            C = C.children[index]
+    return word_list(C)
 
 ###############################################################################
 ## Build
@@ -137,18 +147,42 @@ def build_lexicon(T, filename):
     pass
 
 
-def add_word(T, w):
+def add_word(T, w): # fonctionne
     """ add the word w (str) not empty in the tree T (ptree.Tree)
     """
-    
-    #FIXME
-    pass
-
+    i = 0
+    C = T
+    while i<len(w) and contains(C.children,w[i])!=(False,C.nbchildren):
+        temp = contains(C.children,w[i])
+        i+=1
+        index = temp[1]
+        C = C.children[index]
+    while i<len(w):
+        (C.children).append(ptree.Tree((w[i],i==len(w)-1),None))
+        i+=1
+        C = C.children[C.nbchildren-1]
 
 def build_tree(filename):
     """ build the prefix tree from the file of words filename (str)
     return type: ptree.Tree
     """
-    
-    #FIXME
-    pass   
+    T = ptree.Tree(("",False),None)
+    file = open(filename,'r')
+    for each in file:
+        add_word(T,each)
+    file.close
+    return T
+
+def same(T1,T2):
+    if T1.key!=T2.key or T1.nbchildren!=T2.nbchildren:
+        return False
+    else:
+        state = True
+        i = 0
+        while i < T1.nbchildren:
+            state = same((T1.children)[i],(T2.children)[i])
+            i += 1
+        return state
+test2 = build_tree("lexicons/wordList1.txt")
+print(count_words(test2))
+ #print(same(test,build_tree("lexicons/wordList1.txt")))

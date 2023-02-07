@@ -16,9 +16,10 @@ Arbres généraux :
     - noeud est une feuille quand B.child == None
 """
 
-from algopy import tree
-from algopy import treeasbin
-from algopy import queue
+from algo_py import Tree
+from algo_py import Treeasbin
+from algo_py import queue
+from algo_py import trees_examples
 
 # Partie 1 : Mesures
 
@@ -235,34 +236,77 @@ def morechildren_TAB(B, n = 0):    # arbre bijection premier fils-frère droit
     
 # Ex 3.4 : PME
 
-def nb_height(T,nb,height):
+def __external_average_depth(T, nbl=0, depth=0):
+    """
+    T: Tree
+    depth: the actuel depth
+    return (epl, nbl)
+    - epl: external path length
+    - nbl: leaf number
+    - res : total depth
+    """
     if T.nbchildren==0:
-        return (nb+1,height)
+        nbl+=1
+        return (nbl,depth)
     else:
-        (number,hauteur)=(0,0)
+        epl = 0
+        nbl = 0
         for child in T.children:
-            couple = nb_height(child,nb,height+1)
-            number += couple[0]
-            hauteur += couple[1]
-        return (number,hauteur)
+            temp = __external_average_depth(child,nbl,depth+1)
+            nbl += temp[0]
+            epl += temp[1]
+        return(nbl,epl)
 
-def pme(T):
-    couple = nb_height(T,0,0)
-    return couple[1]/couple[0]
+def external_average_depth(T):
+    (nbl,epl) = __external_average_depth(T)
+    return epl / nbl
 
-def nb_height_TAB(B,nb,height):
+def __average_external_depth(B, depth=0):
+    """
+    B: TreeAsBin
+    depth: the actual depth
+    return (epl, nbl)
+    - epl: external path length
+    - nbl: leaf number
+    """
     if B.child==None:
-        return (nb+1,height)
+        return (depth,1)
+    else:
+        epl = 0
+        nbl = 0
+        C = B.child
+        while C:
+            temp = __average_external_depth(C,depth+1)
+            epl += temp[0]
+            nbl += temp[1]
+            C = C.sibling
+        return (epl,nbl)
+
+def external_average_depth(B):
+    (epl, nbl) = __average_external_depth(B)
+    return epl / nbl
+
+def same_deb(T,B):  # avec return débranchant
+    if T.key!=B.key:
+        return False
     else:
         C = B.child
-        (number,hauteur)=(0,0)
-        while C:
-            couple = nb_height_TAB(C,nb,height+1)
-            number += couple[0]
-            hauteur += couple[1]
+        i = 0
+        while i<T.nbchildren and C:
+            if not same_deb(T.children[i],C):
+                return False
+            i+=1
             C = C.sibling
-        return(number,hauteur)
+        return i==T.nbchildren and C==None
 
-def pme(B):
-    couple = nb_height_TAB(B,0,0)
-    return couple[1]/couple[0]
+def same(T,B):  # sans return débranchant
+    if T.key!=B.key:
+        return False
+    else:
+        C = B.child
+        i = 0
+        test = True
+        while i<T.nbchildren and C and same(T.children[i],C):
+            i+=1
+            C = C.sibling
+        return i==T.nbchildren and C==None

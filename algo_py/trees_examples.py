@@ -4,7 +4,7 @@ Examples of trees in both implementations
 to tests yours functions
 """
 
-from algopy import Tree
+from Tree import Tree
 
 # the first example in tutorial
 T1 = Tree(15,
@@ -29,7 +29,7 @@ T4 = Tree(12,[Tree(2,[Tree(25),Tree(6),Tree(-7)]),
               Tree(4,[Tree(3),Tree(11)])])
               
 
-from algo_py.treeasbin import TreeAsBin              
+from Treeasbin import TreeAsBin              
 
 # same trees in first child - right sibling implementation
 
