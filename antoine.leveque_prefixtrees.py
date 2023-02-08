@@ -17,7 +17,7 @@ from algo_py import ptree
 ##############################################################################
 ## Measure
 
-def count_words(T): # fonctionne
+def count_words(T):
     """ count words in the prefix tree T (ptree.Tree)
     return type: int
     """
@@ -28,7 +28,7 @@ def count_words(T): # fonctionne
         res+=count_words(child)
     return res
 
-def longest_word_length_inter(T,height): # à documenter
+def _longest_word_length_inter(T,height):
     """
     Auxiliary function
     T : a prefix tree T (ptree.Tree)
@@ -40,16 +40,16 @@ def longest_word_length_inter(T,height): # à documenter
         return height
     L = []
     for child in T.children:
-        L.append(longest_word_length_inter(child,height+1))
+        L.append(_longest_word_length_inter(child,height+1))
     return max(L)
 
-def longest_word_length(T):     # fonctionne
+def longest_word_length(T):
     """ longest word length in the prefix tree T (ptree.Tree)
     return type: int    
     """
-    return longest_word_length_inter(T,0)
+    return _longest_word_length_inter(T,0)
 
-def count_height(T,height,res):     # à documenter
+def _count_height(T,height,res):
     """
     Auxiliary function
     T : a prefix tree T (ptree.Tree)
@@ -61,19 +61,19 @@ def count_height(T,height,res):     # à documenter
     if T.key[1]==True:
         res+=height
     for child in T.children:
-        res = count_height(child,height+1,res)
+        res = _count_height(child,height+1,res)
     return res
 
 def average_length(T):  # fonctionne
     """ average word length in the prefix tree T (ptree.Tree)
     return type: float
     """
-    return count_height(T,0,0)/count_words(T)
+    return _count_height(T,0,0)/count_words(T)
     
 ###############################################################################
 ## search and list
 
-def removeLastLetter(s):
+def _removeLastLetter(s):
     """
     return the word s without the last letter
     s : string
@@ -85,7 +85,7 @@ def removeLastLetter(s):
         res+=s[i]
     return res
 
-def something(T,L,s,prefix):
+def _something(T,L,s,prefix):
     """
     return the word list of the T tree and add the word prefix before each of them
     T : a ptree
@@ -96,22 +96,22 @@ def something(T,L,s,prefix):
     """
     s+=T.key[0]
     if T.key[1]==True:
-        ret = removeLastLetter(prefix)
+        ret = _removeLastLetter(prefix)
         ret += s
         L.append(ret)
     else:
         for child in T.children:
-            something(child,L,s,prefix)
+            _something(child,L,s,prefix)
 
 def word_list(T):
     """ generate the word list of the prefix tree T (ptree.Tree)
     return type: str list
     """
     L = []
-    something(T,L,"","")
+    _something(T,L,"","")
     return L
         
-def contains(L,x):
+def _contains(L,x):
     """
     Auxiliary function
     L : a list of children ((char,bool))
@@ -129,7 +129,7 @@ def contains(L,x):
     else:
         return (True,i-1)
 
-def search_word(T, w): # fonctionne
+def search_word(T, w):
     """ search for the word w (str) not empty in the prefix tree T (ptree.Tree)
     return type: bool
     """
@@ -138,7 +138,7 @@ def search_word(T, w): # fonctionne
     C = T
     max = len(w)
     while C.nbchildren!=0 and state and i<max:
-        temp = contains(C.children,w[i])
+        temp = _contains(C.children,w[i])
         if temp==(False,C.nbchildren):
             state = False
         else:
@@ -155,8 +155,8 @@ def completion(T, prefix):
     i = 0
     C = T
     state = True
-    while s!=prefix and state: # recherche de l'arbre contenant tous les mots avec comme préfixe prefix
-        temp = contains(C.children,prefix[i])
+    while s!=prefix and state:
+        temp = _contains(C.children,prefix[i])
         if temp==(False,C.nbchildren):
             state = False
         else:
@@ -165,13 +165,13 @@ def completion(T, prefix):
             index = temp[1]
             C = C.children[index]
     L = []
-    something(C,L,"",prefix)
+    _something(C,L,"",prefix)
     return L
 
 ###############################################################################
 ## Build
 
-def build_lexicon(T, filename):     # Fonctionne
+def build_lexicon(T, filename):
     """ save the tree T (ptree.Tree) in the new file filename (str)
     """
     L = word_list(T)
@@ -180,40 +180,26 @@ def build_lexicon(T, filename):     # Fonctionne
         file.write( word + "\n")
     file.close
 
-def add_word(T, w): # Fonctionne
-    """ add the word w (str) not empty in the tree T (ptree.Tree)
-    """
+def add_word(T,w):
     i = 0
     C = T
-    while i<len(w) and contains(C.children,w[i])!=(False,C.nbchildren):
-        temp = contains(C.children,w[i])
+    while i<len(w) and _contains(C.children,w[i])!=(False,C.nbchildren):
+        temp = (_contains(C.children,w[i]))[1]
         i+=1
-        index = temp[1]
-        C = C.children[index]
+        C = C.children[temp]
     while i<len(w):
-        (C.children).append(ptree.Tree((w[i],i==len(w)-1),[]))
+        C.children.append(ptree.Tree((w[i],i==len(w)-1)))
         i+=1
-        T = T.children[T.nbchildren - 1]
-        C = C.children[C.nbchildren-1]
+        temp2 = C.nbchildren
+        C = C.children[temp2-1]
 
-def build_tree(filename): # fonctionne pas
+def build_tree(filename):
     """ build the prefix tree from the file of words filename (str)
     return type: ptree.Tree
     """
-    T = ptree.Tree(("",False),None)
+    T = ptree.Tree(("",False))
     file = open(filename,'r')
     for each in file:
-        add_word(T,each)
+        add_word(T,each.strip())
     file.close
     return T
-
-def same(T1,T2): # fonctionne
-    if T1.key!=T2.key or T1.nbchildren!=T2.nbchildren:
-        return False
-    else:
-        state = True
-        i = 0
-        while i < T1.nbchildren :
-            state = same((T1.children)[i],(T2.children)[i])
-            i += 1
-        return state
