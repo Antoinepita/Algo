@@ -16,9 +16,6 @@ from algo_py import ptree
 
 ##############################################################################
 ## Measure
- 
-import prefixtreesexample
-test = prefixtreesexample.Tree1
 
 def count_words(T): # fonctionne
     """ count words in the prefix tree T (ptree.Tree)
@@ -46,13 +43,13 @@ def longest_word_length_inter(T,height): # à documenter
         L.append(longest_word_length_inter(child,height+1))
     return max(L)
 
-def longest_word_length(T):
+def longest_word_length(T):     # fonctionne
     """ longest word length in the prefix tree T (ptree.Tree)
     return type: int    
     """
     return longest_word_length_inter(T,0)
 
-def count_height(T,height,res):
+def count_height(T,height,res):     # à documenter
     """
     Auxiliary function
     T : a prefix tree T (ptree.Tree)
@@ -67,7 +64,7 @@ def count_height(T,height,res):
         res = count_height(child,height+1,res)
     return res
 
-def average_length(T):
+def average_length(T):  # fonctionne
     """ average word length in the prefix tree T (ptree.Tree)
     return type: float
     """
@@ -76,14 +73,44 @@ def average_length(T):
 ###############################################################################
 ## search and list
 
+def removeLastLetter(s):
+    """
+    return the word s without the last letter
+    s : string
+    return type : string
+    """
+    res = ""
+    max = len(s)
+    for i in range(max-1):
+        res+=s[i]
+    return res
+
+def something(T,L,s,prefix):
+    """
+    return the word list of the T tree and add the word prefix before each of them
+    T : a ptree
+    L : a list
+    s : a string
+    prefix : a string
+    return type : list
+    """
+    s+=T.key[0]
+    if T.key[1]==True:
+        ret = removeLastLetter(prefix)
+        ret += s
+        L.append(ret)
+    else:
+        for child in T.children:
+            something(child,L,s,prefix)
+
 def word_list(T):
     """ generate the word list of the prefix tree T (ptree.Tree)
     return type: str list
     """
-    #FIXME
-    pass
+    L = []
+    something(T,L,"","")
+    return L
         
-
 def contains(L,x):
     """
     Auxiliary function
@@ -95,9 +122,12 @@ def contains(L,x):
     state = False
     i=0
     while i<len(L) and state==False:
-        state = (L[i]).key[0]==x
+        state = ((L[i]).key[0])==x
         i+=1
-    return (i!=len(L),i)
+    if state==False:
+        return (False,i)
+    else:
+        return (True,i-1)
 
 def search_word(T, w): # fonctionne
     """ search for the word w (str) not empty in the prefix tree T (ptree.Tree)
@@ -134,20 +164,23 @@ def completion(T, prefix):
             i+=1
             index = temp[1]
             C = C.children[index]
-    return word_list(C)
+    L = []
+    something(C,L,"",prefix)
+    return L
 
 ###############################################################################
 ## Build
 
-def build_lexicon(T, filename):
+def build_lexicon(T, filename):     # Fonctionne
     """ save the tree T (ptree.Tree) in the new file filename (str)
     """
-    
-    #FIXME
-    pass
+    L = word_list(T)
+    file = open(filename,'w')
+    for word in L:
+        file.write( word + "\n")
+    file.close
 
-
-def add_word(T, w): # fonctionne
+def add_word(T, w): # Fonctionne
     """ add the word w (str) not empty in the tree T (ptree.Tree)
     """
     i = 0
@@ -158,11 +191,12 @@ def add_word(T, w): # fonctionne
         index = temp[1]
         C = C.children[index]
     while i<len(w):
-        (C.children).append(ptree.Tree((w[i],i==len(w)-1),None))
+        (C.children).append(ptree.Tree((w[i],i==len(w)-1),[]))
         i+=1
+        T = T.children[T.nbchildren - 1]
         C = C.children[C.nbchildren-1]
 
-def build_tree(filename):
+def build_tree(filename): # fonctionne pas
     """ build the prefix tree from the file of words filename (str)
     return type: ptree.Tree
     """
@@ -173,16 +207,13 @@ def build_tree(filename):
     file.close
     return T
 
-def same(T1,T2):
+def same(T1,T2): # fonctionne
     if T1.key!=T2.key or T1.nbchildren!=T2.nbchildren:
         return False
     else:
         state = True
         i = 0
-        while i < T1.nbchildren:
+        while i < T1.nbchildren :
             state = same((T1.children)[i],(T2.children)[i])
             i += 1
         return state
-test2 = build_tree("lexicons/wordList1.txt")
-print(count_words(test2))
- #print(same(test,build_tree("lexicons/wordList1.txt")))
