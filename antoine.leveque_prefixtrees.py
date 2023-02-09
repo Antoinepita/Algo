@@ -99,8 +99,7 @@ def _something(T,L,s,prefix):
         ret = _removeLastLetter(prefix)
         ret += s
         L.append(ret)
-    else:
-        for child in T.children:
+    for child in T.children:
             _something(child,L,s,prefix)
 
 def word_list(T):
@@ -154,17 +153,19 @@ def completion(T, prefix):
     s = ""
     i = 0
     C = T
+    L = []
     state = True
     while s!=prefix and state:
         temp = _contains(C.children,prefix[i])
         if temp==(False,C.nbchildren):
             state = False
+            return L
         else:
             s+=prefix[i]
             i+=1
             index = temp[1]
             C = C.children[index]
-    L = []
+    
     _something(C,L,"",prefix)
     return L
 
