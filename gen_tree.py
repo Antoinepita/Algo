@@ -310,3 +310,27 @@ def same(T,B):  # sans return débranchant
             i+=1
             C = C.sibling
         return i==T.nbchildren and C==None
+
+def treeasbin_to_tree(B):
+	T = tree.Tree(B.key,[])
+	child = B.child
+	while child!=None:
+		T.children.append(treeasbin_to_tree(child))
+		child = child.sibling
+	return T
+
+def tree_to_treeasbin_(T):
+	B = treeasbin.TreeAsBin(T.key,None,None)
+	if T.nbchildren != 0:
+		B.child = tree_to_treeasbin_(T.children[0])
+		last = B.child
+		for i in range(1,T.nbchildren):
+			last.sibling = tree_to_treeasbin_(T.children[i])
+			last = last.sibling
+	return B
+
+
+def tree_to_treeasbin(T):
+    B = treeasbin.TreeAsBin(T.key,None,None)
+    firstchild = None
+    return 2
