@@ -53,16 +53,14 @@ Ex 2.1 : Minimum et maximum
 """
 
 def getMin(B):
-    C = B
-    while C.nbkeys!=0:  # bord gauche
-        C = C.children[0]
-    return C.keys[0]    # valeur de la première clé
+    while B.children!=[]:  # bord gauche
+        B = B.children[0]
+    return B.keys[0]    # valeur de la première clé
 
 def getMax(B):
-    C = B
-    while C.nbkeys!=0:  # bord droit
-        C = C.children[-1]
-    return C.keys[-1]   # valeur de la dernière clé
+    while B.children!=[]:  # bord droit
+        B = B.children[-1]
+    return B.keys[-1]   # valeur de la dernière clé
 
 # Ex 2.2: Recherche d'un élément
 def dicho(L,x):
@@ -83,16 +81,25 @@ def dicho(L,x):
         m = (a+b)//2
     return a
 
-print(dicho([0,1,2,3,4,5,6,7,8,9],))
-
 def search(B,x):
     i = dicho(B.keys,x)
-    if B.keys[i]==x:    # cas d'arrêt : valeur trouvée
+    if i<B.nbkeys and B.keys[i]==x:    # cas d'arrêt : valeur trouvée   / erreur commune : oubli de la première cdt : si l'index dépasse
         return (B,i)
-    if B.keys[i]!=x and (B.keys[i]).children==0:    # cas d'arrêt : valeur pas trouvée dans la liste et pas d'enfant donc n'est pas dans l'arbre
+    if B.children==[]:  # cas d'arrêt : cas feuille et valeur pas trouvée
         return None
     else:
-        if x>B.keys[i]: # sinon on réeffectue la recherche sur :
-            search(B.children[i+1],x) # le sous arbre droit de là où il devrait se trouver si x>clé actuelle 
-        else:
-            search(B.children[i],x) # le sous-arbre gauche sinon (x<=valeur de la clé actuelle)
+        return search(B.children[i],x)
+
+"""
+Ex 2.3 : Insertion d'un élément (méthode classique)
+B-arbre de degré t:
+    - k.noeuds : t<=k<=2t
+        --> sauf racine : 2<=k<=2t
+    - toutes les feuilles sont au même niveau
+    - si le noeud n'est pas plein : on ajoute à l'index nécessaire
+    - sinon :
+        - (pas compris)    
+"""
+
+def split(B,i):
+    return None
