@@ -1,4 +1,4 @@
-#from algo_py import  btree
+from algo_py import btree
 
 """
 Arbres-B :
@@ -102,4 +102,14 @@ B-arbre de degré t:
 """
 
 def split(B,i):
-    return None
+    mid = B.degree-1
+    L = B.children[i]
+    R = btree.BTree()
+    # keys
+    (L.keys,x,R.keys) = (L.keys[:mid],L.keys[mid],L.keys[mid+1])
+    # children
+    if L.children!=[]:
+        (L.children,R.children) = (L.children[:mid+1],L.children[mid+1:])
+    # root
+    B.keys.insert(i,x)
+    B.children.insert(i+1,R)
