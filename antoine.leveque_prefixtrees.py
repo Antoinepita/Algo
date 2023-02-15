@@ -175,7 +175,7 @@ def completion(T, prefix):
 def build_lexicon(T, filename):
     """ save the tree T (ptree.Tree) in the new file filename (str)
     """
-    L = word_list(T)
+    L = sorted(word_list(T))
     file = open(filename,'w')
     for word in L:
         file.write( word + "\n")
@@ -202,5 +202,5 @@ def build_tree(filename):
     file = open(filename,'r')
     for each in file:
         add_word(T,each.strip())
-    file.close
+    file.close()
     return T
