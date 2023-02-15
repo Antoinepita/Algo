@@ -113,3 +113,45 @@ def split(B,i):
     # root
     B.keys.insert(i,x)
     B.children.insert(i+1,R)
+
+"""
+Principe insertion de x dans B :
+    - i : position(hypothétique ?)
+    - si x appartient à la racine --> stop
+    - sinon :
+        - feuille : insérer x dans racine en pos i
+        - noeud feuille :
+            - si racine(fils i)=2t-noeuds
+                si x = clé centrale du fils i --> stop
+            - éclater fils i
+            - si w>clé remontée :
+                i++
+            - insérer x dans fils i
+"""
+
+def _insert(B, x):
+    i = dicho(B,x)
+    if i < B.nbkeys and B.keys[i] == x:
+        raise Exception("x in B")
+    elif B.children == []:
+        B.keys.insert(i, x)
+    else:
+        if B.children[i].nbkeys == 2 * B.degree - 1:
+            if x == B.children[i].keys[B.degree-1]:
+                raise Exception("x in B")
+            split(B, i)
+            if x > B.keys[i]:
+                i += 1
+        _insert(B.children[i], x)
+
+
+            
+def insert(B,x):
+    if B==None:
+        return btree.BTree([x],[])
+    else:
+        if B.nbkeys==2*B.degree - 1:
+            B = btree.BTree([],[B])
+            split(B,0)
+        _insert(B,x)
+        return B
