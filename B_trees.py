@@ -155,3 +155,12 @@ def insert(B,x):
             split(B,0)
         _insert(B,x)
         return B
+
+
+def leftRotation(B,i):
+    L = B.children[i]
+    R = B.children[i+1]
+    L.Keys.append(B.keys[i])
+    B.keys[i] = R.keys.pop(0)
+    if R.children:
+        L.children.append(R.children.pop(0))

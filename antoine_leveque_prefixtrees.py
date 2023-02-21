@@ -15,18 +15,7 @@ from algo_py import ptree
 # Do not add any import
 
 ##############################################################################
-## Measure
-
-def count_words(T):
-    """ count words in the prefix tree T (ptree.Tree)
-    return type: int
-    """
-    res = 0
-    if T.key[1]==True:
-        res+=1
-    for child in T.children:
-        res+=count_words(child)
-    return res
+# fonctions auxiliaires
 
 def _longest_word_length_inter(T,height):
     """
@@ -43,12 +32,6 @@ def _longest_word_length_inter(T,height):
         L.append(_longest_word_length_inter(child,height+1))
     return max(L)
 
-def longest_word_length(T):
-    """ longest word length in the prefix tree T (ptree.Tree)
-    return type: int    
-    """
-    return _longest_word_length_inter(T,0)
-
 def _count_height(T,height,res):
     """
     Auxiliary function
@@ -63,15 +46,6 @@ def _count_height(T,height,res):
     for child in T.children:
         res = _count_height(child,height+1,res)
     return res
-
-def average_length(T):  # fonctionne
-    """ average word length in the prefix tree T (ptree.Tree)
-    return type: float
-    """
-    return _count_height(T,0,0)/count_words(T)
-    
-###############################################################################
-## search and list
 
 def _removeLastLetter(s):
     """
@@ -102,14 +76,7 @@ def _something(T,L,s,prefix):
     for child in T.children:
             _something(child,L,s,prefix)
 
-def word_list(T):
-    """ generate the word list of the prefix tree T (ptree.Tree)
-    return type: str list
-    """
-    L = []
-    _something(T,L,"","")
-    return L
-        
+
 def _contains(L,x):
     """
     Auxiliary function
@@ -127,6 +94,43 @@ def _contains(L,x):
         return (False,i)
     else:
         return (True,i-1)
+
+##############################################################################
+## Measure
+
+def count_words(T):
+    """ count words in the prefix tree T (ptree.Tree)
+    return type: int
+    """
+    res = 0
+    if T.key[1]==True:
+        res+=1
+    for child in T.children:
+        res+=count_words(child)
+    return res
+
+def longest_word_length(T):
+    """ longest word length in the prefix tree T (ptree.Tree)
+    return type: int    
+    """
+    return _longest_word_length_inter(T,0)
+
+def average_length(T):  # fonctionne
+    """ average word length in the prefix tree T (ptree.Tree)
+    return type: float
+    """
+    return _count_height(T,0,0)/count_words(T)
+    
+###############################################################################
+## search and list
+
+def word_list(T):
+    """ generate the word list of the prefix tree T (ptree.Tree)
+    return type: str list
+    """
+    L = []
+    _something(T,L,"","")
+    return sorted(L)
 
 def search_word(T, w):
     """ search for the word w (str) not empty in the prefix tree T (ptree.Tree)
@@ -175,7 +179,7 @@ def completion(T, prefix):
 def build_lexicon(T, filename):
     """ save the tree T (ptree.Tree) in the new file filename (str)
     """
-    L = sorted(word_list(T))
+    L = word_list(T)
     file = open(filename,'w')
     for word in L:
         file.write( word + "\n")
@@ -184,7 +188,7 @@ def build_lexicon(T, filename):
 def add_word(T,w):
     i = 0
     C = T
-    while i<len(w) and _contains(C.children,w[i])!=(False,C.nbchildren):
+    while i<len(w)-1 and _contains(C.children,w[i])!=(False,C.nbchildren):
         temp = (_contains(C.children,w[i]))[1]
         i+=1
         C = C.children[temp]
