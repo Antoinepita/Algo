@@ -208,3 +208,13 @@ def build_tree(filename):
         add_word(T,each.strip())
     file.close()
     return T
+
+from algo_py import prefixtreesexample
+
+test = prefixtreesexample.Tree1
+
+build_lexicon(test,"test0")
+add_word(test,"motorola")
+build_lexicon(test,"test1")
+add_word(test,"moto")
+build_lexicon(test,"test2")
